@@ -53,13 +53,41 @@ LEFT OUTER JOIN SalesLT.Address AS c
 ON  a.AddressID = c.AddressID
 WHERE c.AddressLine2 IS NULL
 
+SELECT b.CustomerID, b.CompanyName, b.FirstName, b.LastName, b.Phone, c.AddressLine1, c.AddressLine2
+FROM SalesLT.Customer AS b
+LEFT OUTER JOIN SalesLT.CustomerAddress AS a
+ON a.CustomerID = b.CustomerID
+LEFT OUTER JOIN SalesLT.Address AS c
+ON  a.AddressID = c.AddressID
+WHERE c.AddressID IS NULL
+
 --Challenge2 Task3
 --Some customers have never placed orders, and some products have never been ordered. Create a query
 --that returns a column of customer IDs for customers who have never placed an order, and a column of
 --product IDs for products that have never been ordered. Each row with a customer ID should have a
 --NULL product ID (because the customer has never ordered a product) and each row with a product ID
 --should have a NULL customer ID (because the product has never been ordered by a customer).
-SELECT a.CustomerID, b.ProductID
+SELECT c.CustomerID, p.ProductID
+FROM SalesLT.Customer AS c
+FULL OUTER JOIN SalesLT.SalesOrderHeader AS h
+ON h.CustomerID =  c.CustomerID --joined SalesOrderHeader with Customer ON customerID
+FULL OUTER JOIN SalesLT.SalesOrderDetail AS o
+ON o.SalesOrderID = h.SalesOrderID --joined SalesOrderDatail with SalesOrderHeader ON SalesOrderID
+FULL OUTER JOIN SalesLT.Product AS p
+ON p.ProductID = o.ProductID --joined Product with SalesOrderDatail ON ProductID
+WHERE o.SalesOrderID IS NULL
+--968 rows
+
+SELECT a.CustomerID
 FROM SalesLT.Customer AS a
-FULL OUTER JOIN SalesLT.Product AS b
-ON a.CustomerID = b.ProductID
+left outer join SalesLT.SalesOrderHeader AS b
+ON b.CustomerID = a.CustomerID
+WHERE b.CustomerID is null
+--815 rows
+
+SELECT p.ProductID
+FROM SalesLT.Product AS p
+left outer join SalesLT.SalesOrderDetail AS s
+ON s.ProductID = p.ProductID
+WHERE s.ProductID is null
+--153 rows
