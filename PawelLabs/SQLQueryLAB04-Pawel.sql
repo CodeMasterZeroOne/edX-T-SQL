@@ -17,6 +17,7 @@ ON customer.CustomerID = addressSpareTable.CustomerID
 JOIN SalesLT.Address AS address
 ON addressSpareTable.AddressID = address.AddressID
 WHERE addressSpareTable.AddressType = 'Main Office';
+-- 407 rows
 
 --Challenge1 Task2
 --Write a similar query that retrieves the company name, first line of the street address, city, and a 
@@ -29,6 +30,7 @@ ON customer.CustomerID = addressSpareTable.CustomerID
 JOIN SalesLT.Address AS address
 ON addressSpareTable.AddressID = address.AddressID
 WHERE addressSpareTable.AddressType = 'Shipping';
+-- 10 rows
 
 --Challenge1 Task3
 --Combine the results returned by the two queries to create a list of all 
@@ -49,6 +51,7 @@ JOIN SalesLT.Address AS address
 ON addressSpareTable.AddressID = address.AddressID
 WHERE addressSpareTable.AddressType = 'Shipping'
 ORDER BY customer.CompanyName, AddressType;
+-- 417 rows
 
 --Challenge2 Task1
 --Write a query that returns the company name of each company that appears in a table of customers
@@ -62,6 +65,7 @@ SELECT customer.CompanyName FROM SalesLT.Customer AS customer
 JOIN SalesLT.CustomerAddress AS customerAddress
 ON customer.CustomerID = customerAddress.CustomerID
 WHERE customerAddress.AddressType = 'Shipping';
+-- 396 rows
 
 --Challenge2 Task2
 --Write a query that returns the company name of each company that appears in a table of customers
@@ -75,3 +79,4 @@ SELECT customer.CompanyName FROM SalesLT.Customer as customer
 JOIN SalesLT.CustomerAddress AS customerAddress
 ON customer.CustomerID = customerAddress.CustomerID
 WHERE customerAddress.AddressType = 'Shipping'
+-- 10 rows
