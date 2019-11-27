@@ -10,7 +10,7 @@ USE AdventureWorksLT2012
 SELECT p.ProductID, p.Name, pm.Name, pm.Summary
 FROM SalesLT.Product AS p
 LEFT JOIN SalesLT.vProductModelCatalogDescription AS pm
-ON pm.ProductModelID = p.ProductModelID
+ON pm.ProductModelID = p.ProductModelID;
 -- 295 rows
 
 --Challenge1 Task2
@@ -29,7 +29,7 @@ INSERT INTO @tableVariableColors
 SELECT DISTINCT Color FROM SalesLT.Product
 SELECT ProductID, Name, Color
 FROM SalesLT.Product
-WHERE Color IN(SELECT * FROM @tableVariableColors)
+WHERE Color IN(SELECT * FROM @tableVariableColors);
 -- 245 rows
 			--select * from @tableVariableColors -- out of scope, it has to run together DECLARE>INSERT>SELECT
 
@@ -40,7 +40,7 @@ WHERE Color IN(SELECT * FROM @tableVariableColors)
 SELECT p.Name, p.ProductNumber, c.ProductCategoryName, c.ParentProductCategoryName 
 FROM SalesLT.Product AS p
 LEFT JOIN dbo.ufnGetAllCategories() as c
-ON c.ProductCategoryID = p.ProductCategoryID
+ON c.ProductCategoryID = p.ProductCategoryID;
 -- 295 rows
 
 --Each Adventure Works customer is a retail company with a named contact. You must create queries that return the total revenue for each customer, 
@@ -58,5 +58,5 @@ AS
 SELECT ContactDetails, SUM(TotalRevenue) as TotalRevenue
 FROM SalesOrders
 GROUP BY ContactDetails 
-ORDER BY TotalRevenue
+ORDER BY TotalRevenue;
 -- 32 rows

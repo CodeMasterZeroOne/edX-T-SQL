@@ -11,7 +11,7 @@ USE AdventureWorksLT2012
 SELECT b.CompanyName, a.SalesOrderID, a.TotalDue
 FROM SalesLT.SalesOrderHeader AS a
 LEFT OUTER JOIN SalesLT.Customer AS b
-ON a.CustomerID = b.CustomerID
+ON a.CustomerID = b.CustomerID;
 
 --Challenge1 Task2
 --Extend your customer orders query to include the Main Office address for each customer, 
@@ -28,7 +28,7 @@ LEFT OUTER JOIN SalesLT.CustomerAddress AS c
 ON b.CustomerID = c.CustomerID
 LEFT OUTER JOIN SalesLT.Address AS d
 ON c.AddressID = d.AddressID
-WHERE c.AddressType = 'Main Office'
+WHERE c.AddressType = 'Main Office';
 
 --Challenge2 Task1
 --The sales manager wants a list of all customer companies and their contacts (first name and last name),
@@ -39,7 +39,7 @@ SELECT a.CompanyName, a.FirstName, a.LastName, b.SalesOrderID, b.TotalDue
 FROM SalesLT.Customer As a
 FULL OUTER JOIN SalesLT.SalesOrderHeader AS b
 ON a.CustomerID = b.CustomerID
-ORDER BY b.TotalDue DESC
+ORDER BY b.TotalDue DESC;
 
 --Challenge2 Task2
 --A sales employee has noticed that Adventure Works does not have address information for all
@@ -51,7 +51,7 @@ LEFT OUTER JOIN SalesLT.Customer AS b
 ON a.CustomerID = b.CustomerID
 LEFT OUTER JOIN SalesLT.Address AS c
 ON  a.AddressID = c.AddressID
-WHERE c.AddressLine2 IS NULL
+WHERE c.AddressLine2 IS NULL;
 
 SELECT b.CustomerID, b.CompanyName, b.FirstName, b.LastName, b.Phone, c.AddressLine1, c.AddressLine2
 FROM SalesLT.Customer AS b
@@ -59,7 +59,7 @@ LEFT OUTER JOIN SalesLT.CustomerAddress AS a
 ON a.CustomerID = b.CustomerID
 LEFT OUTER JOIN SalesLT.Address AS c
 ON  a.AddressID = c.AddressID
-WHERE c.AddressID IS NULL
+WHERE c.AddressID IS NULL;
 
 --Challenge2 Task3
 --Some customers have never placed orders, and some products have never been ordered. Create a query
@@ -75,19 +75,19 @@ FULL OUTER JOIN SalesLT.SalesOrderDetail AS o
 ON o.SalesOrderID = h.SalesOrderID --joined SalesOrderDatail with SalesOrderHeader ON SalesOrderID
 FULL OUTER JOIN SalesLT.Product AS p
 ON p.ProductID = o.ProductID --joined Product with SalesOrderDatail ON ProductID
-WHERE o.SalesOrderID IS NULL
+WHERE o.SalesOrderID IS NULL;
 --968 rows
 
 SELECT a.CustomerID
 FROM SalesLT.Customer AS a
 left outer join SalesLT.SalesOrderHeader AS b
 ON b.CustomerID = a.CustomerID
-WHERE b.CustomerID is null
+WHERE b.CustomerID is null;
 --815 rows
 
 SELECT p.ProductID
 FROM SalesLT.Product AS p
 left outer join SalesLT.SalesOrderDetail AS s
 ON s.ProductID = p.ProductID
-WHERE s.ProductID is null
+WHERE s.ProductID is null;
 --153 rows

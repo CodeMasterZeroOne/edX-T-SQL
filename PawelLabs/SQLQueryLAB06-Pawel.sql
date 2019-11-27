@@ -12,7 +12,7 @@ USE AdventureWorksLT2012
 SELECT p.ProductID, p.Name, p.ListPrice
 FROM SalesLT.Product AS p
 WHERE p.ListPrice >
-	(SELECT AVG(o.UnitPrice) FROM SalesLT.SalesOrderDetail AS o)
+	(SELECT AVG(o.UnitPrice) FROM SalesLT.SalesOrderDetail AS o);
 	-- 137 rows and AVG is 382.87
 
 --Challenge1 Task2
@@ -22,7 +22,7 @@ FROM SalesLT.Product AS p
 WHERE p.ListPrice > 100
 AND p.ProductID IN
 	(SELECT o.ProductID FROM SalesLT.SalesOrderDetail AS o
-	WHERE o.UnitPrice < 100)
+	WHERE o.UnitPrice < 100);
 	-- 7 rows
 
 --Challenge1 Task3
@@ -31,7 +31,8 @@ SELECT p.ProductID, p.Name, p.StandardCost, p.ListPrice,
 	(SELECT AVG(o.UnitPrice) 
 	FROM SalesLT.SalesOrderDetail AS o
 	WHERE o.ProductID = p.ProductID) AS AverageUnitPrice
-FROM SalesLT.Product AS p
+FROM SalesLT.Product AS p;
+-- 295 rows
 
 --Challenge1 Task4
 --Filter your previous query to include only products where the cost price is higher than the average selling price.
@@ -42,7 +43,7 @@ SELECT p.ProductID, p.Name, p.StandardCost, p.ListPrice,
 FROM SalesLT.Product AS p
 WHERE p.StandardCost >
 	(SELECT AVG(o.UnitPrice) FROM SalesLT.SalesOrderDetail AS o
-	WHERE o.ProductID = p.ProductID)
+	WHERE o.ProductID = p.ProductID);
 	-- 60 rows
 
 --The AdventureWorksLT database includes a table-valued user-defined function named dbo.ufnGetCustomerInformation. 
@@ -54,7 +55,7 @@ WHERE p.StandardCost >
 --Retrieve the sales order ID, customer ID, first name, last name, and total due for all sales orders from the SalesLT.SalesOrderHeader table and the dbo.ufnGetCustomerInformation function.
 SELECT s.SalesOrderID, s.CustomerID, c.FirstName, c.LastName, s.TotalDue
 FROM SalesLT.SalesOrderHeader AS s
-CROSS APPLY dbo.ufnGetCustomerInformation(s.CustomerID) AS c
+CROSS APPLY dbo.ufnGetCustomerInformation(s.CustomerID) AS c;
 -- 32 rows
 
 --Challenge2 Task2
@@ -63,5 +64,5 @@ SELECT c.CustomerID, c.FirstName, c.LastName, a.AddressLine1, a.City
 FROM SalesLT.CustomerAddress AS ca
 JOIN SalesLT.Address As a
 ON a.AddressID = ca.AddressID
-OUTER APPLY dbo.ufnGetCustomerInformation(ca.CustomerID) AS c
+OUTER APPLY dbo.ufnGetCustomerInformation(ca.CustomerID) AS c;
 -- 417 rows

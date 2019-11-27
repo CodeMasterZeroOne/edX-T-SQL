@@ -78,5 +78,5 @@ INTERSECT
 SELECT customer.CompanyName FROM SalesLT.Customer as customer
 JOIN SalesLT.CustomerAddress AS customerAddress
 ON customer.CustomerID = customerAddress.CustomerID
-WHERE customerAddress.AddressType = 'Shipping'
+WHERE customerAddress.AddressType = 'Shipping';
 -- 10 rows

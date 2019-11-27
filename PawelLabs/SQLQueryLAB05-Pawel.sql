@@ -8,7 +8,7 @@ USE AdventureWorksLT2012
 --Write a query to return the product ID of each product, together with the product name formatted as upper case and 
 --a column named ApproxWeight with the weight of each product rounded to the nearest whole unit.
 SELECT p.ProductID, UPPER(p.Name) AS ProductName, ROUND(p.Weight, 0) AS ApproxWeight
-FROM SalesLT.Product AS p
+FROM SalesLT.Product AS p;
 
 --Challenge1 Task2
 --Extend your query to include columns named SellStartYear and SellStartMonth containing the year and month in which 
@@ -18,7 +18,8 @@ SELECT p.ProductID,
 	ROUND(p.Weight, 0) AS ApproxWeight, 
 	YEAR(p.SellStartDate) AS SellStartYear, 
 	DATENAME(mm, p.SellStartDate) AS SellStartMonth
-FROM SalesLT.Product AS p
+FROM SalesLT.Product AS p;
+-- 295 rows
 
 --Challenge1 Task3
 --Extend your query to include a column named ProductType that contains the leftmost two characters from the product number.
@@ -28,7 +29,7 @@ SELECT p.ProductID,
 	YEAR(p.SellStartDate) AS SellStartYear, 
 	DATENAME(mm, p.SellStartDate) AS SellStartMonth,
 	LEFT(p.ProductNumber, 2) AS ProductType
-FROM SalesLT.Product AS p
+FROM SalesLT.Product AS p;
 -- 295 rows
 
 --Challenge1 Task4
@@ -40,7 +41,7 @@ SELECT p.ProductID,
 	DATENAME(mm, p.SellStartDate) AS SellStartMonth,
 	LEFT(p.ProductNumber, 2) AS ProductType
 FROM SalesLT.Product AS p
-WHERE ISNUMERIC(Size) = 1 -- 1=true 0=false
+WHERE ISNUMERIC(Size) = 1; -- 1=true 0=false
 -- 177 rows
 
 --Challenge2 Task1
@@ -51,7 +52,7 @@ SELECT c.CompanyName, o.TotalDue,
 FROM SalesLT.Customer AS c
 LEFT JOIN SalesLT.SalesOrderHeader AS o
 ON c.CustomerID = o.CustomerID
-WHERE ISNUMERIC(o.TotalDue) = 1
+WHERE ISNUMERIC(o.TotalDue) = 1;
 -- 32 rows
 
 --Challenge3 Task1
