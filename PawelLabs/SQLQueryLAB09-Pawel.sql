@@ -8,42 +8,80 @@ USE AdventureWorksLT2012
 --Tip: Review the documentation for INSERT in the Transact-SQL Language Reference.
 
 --Challenge1 Task1
---Adventure Works has started selling the following new product. Insert it into the SalesLT.Product table, using default or NULL values for unspecified columns:
+--Adventure Works has started selling the following new product. Insert it into the SalesLT.
+--Product table, using default or NULL values for unspecified columns:
 --Name       ProductNumber StandardCost ListPrice ProductCategoryID SellStartDate
 --LED Lights LT-L123       2.56         12.99     37                <Today>
+INSERT INTO SalesLT.Product(Name, ProductNumber, StandardCost, ListPrice, ProductCategoryID, SellStartDate)
+VALUES ('LED Lights', 'LT-L123', 2.56, 12.99, 37, GETDATE());
 
 --After you have inserted the product, run a query to determine the ProductID that was generated. 
+SELECT SCOPE_IDENTITY() AS ProductID;
+-- ProductID = 1000
+
 --Then run a query to view the row for the product in the SalesLT.Product table.
+SELECT * FROM SalesLT.Product
+WHERE ProductID = SCOPE_IDENTITY();
 
 --Challenge1 Task2
---Adventure Works is adding a product category for ‘Bells and Horns’ to its catalog. The parent category for the new category is 4 (Accessories). 
+--Adventure Works is adding a product category for ‘Bells and Horns’ to its catalog. 
+--The parent category for the new category is 4 (Accessories). 
 --This new category includes the following two new products:
+
 --Name          ProductNumber StandardCost ListPrice ProductCategoryID SellStartDate
 --Bicycle Bell  BB-RING       2.47         4.99      <The new ID for   <Today>
---						  Bells and Horns>
+--													Bells and Horns>
 
 --Bicycle Horn  BB-PARP       1.29         3.75      <The new ID for   <Today>
---						  Bells and Horns>
+--													Bells and Horns>
 
 --Write a query to insert the new product category, and then insert the two new products with the appropriate ProductCategoryID value.
---After you have inserted the products, query the SalesLT.Product and SalesLT.ProductCategory tables to verify that the data has been inserted.
+INSERT INTO SalesLT.ProductCategory (ParentProductCategoryID, Name) VALUES (4, 'Bells and Horns');
 
+INSERT INTO SalesLT.Product(Name, ProductNumber, StandardCost, ListPrice, ProductCategoryID, SellStartDate)
+	VALUES ('Bicycle Bell', 'BB-RING', 2.47, 4.99, IDENT_CURRENT('SalesLT.ProductCategory'), GETDATE()),
+		('Bicycle Horn', 'BB-PARP', 1.29, 3.75, IDENT_CURRENT('SalesLT.ProductCategory'), GETDATE());
+
+--After you have inserted the products, query the SalesLT.Product and SalesLT.ProductCategory tables to verify that the data has been inserted.
+SELECT c.Name As Category, p.Name AS Product, p.ProductNumber AS ProductNumber,	p.StandardCost AS StandardCost,
+	p.ListPrice AS ListPrice, p.ProductCategoryID AS ProductCategoryID, p.SellStartDate AS SellStartDate
+FROM SalesLT.Product AS p
+JOIN SalesLT.ProductCategory as c ON c.ProductCategoryID = p.ProductCategoryID
+WHERE p.ProductCategoryID = IDENT_CURRENT('SalesLT.ProductCategory');
 
 --You have inserted data for a product, but the pricing details are not correct. You must now update the records 
---you have previously inserted to reflect the correct pricing. Tip: Review the documentation for UPDATE in the Transact-SQL Language Reference.
+--you have previously inserted to reflect the correct pricing. 
+--Tip: Review the documentation for UPDATE in the Transact-SQL Language Reference.
 
 --Challenge2 Task1
---The sales manager at Adventure Works has mandated a 10% price increase for all products in the Bells and Horns category. Update the rows in the SalesLT.
---Product table for these products to increase their price by 10%.
+--The sales manager at Adventure Works has mandated a 10% price increase for all products in the Bells and Horns category. 
+--Update the rows in the SalesLT.Product table for these products to increase their price by 10%.
+UPDATE SalesLT.Product
+SET ListPrice = ListPrice * 1.1
+WHERE ProductCategoryID =
+	(SELECT ProductCategoryID FROM SalesLT.ProductCategory
+	WHERE Name = 'Bells and Horns');
+	-- to see updated values execute previous query
 
 --Challenge2 Task2
 --The new LED lights you inserted in the previous challenge are to replace all previous light products. 
 --Update the SalesLT.Product table to set the DiscontinuedDate to today’s date for all products in the Lights category 
 --(Product Category ID 37) other than the LED Lights product you inserted previously.
-
+UPDATE SalesLT.Product
+SET DiscontinuedDate = GETDATE()
+WHERE ProductCategoryID = 37 AND Name != 'LED Lights';
+-- NOTE: Both != and <> operators are not equal operators and will return same result but != operator is not a ISO standard.
 
 --The Bells and Horns category has not been successful, and it must be deleted from the database. 
 --Tip: Review the documentation for DELETE in the Transact-SQL Language Reference.
 
 --Challenge3 Task1
---Delete the records foe the Bells and Horns category and its products. You must ensure that you delete the records from the tables in the correct order to avoid a foreign-key constraint violation.
+--Delete the records for the Bells and Horns category and its products. 
+--You must ensure that you delete the records from the tables in the correct order to avoid a foreign-key constraint violation.
+DELETE FROM SalesLT.Product
+WHERE ProductCategoryID = 
+	(SELECT ProductCategoryID FROM SalesLT.ProductCategory WHERE Name = 'Bells and Horns');
+
+DELETE FROM SalesLT.ProductCategory
+WHERE ProductCategoryID =
+	(SELECT ProductCategoryID FROM SalesLT.ProductCategory WHERE Name = 'Bells and Horns');
