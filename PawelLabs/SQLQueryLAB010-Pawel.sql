@@ -17,6 +17,15 @@ USE AdventureWorksLT2012
 --Order Date     Due Date          Customer ID 
 --Today’s date   7 days from now   1
 
+DECLARE @orderDate date = GETDATE();
+DECLARE @dueDate date = DATEADD(DD, 7, GETDATE());
+DECLARE @customerID int = 1;
+
+INSERT INTO SalesLT.SalesOrderHeader(OrderDate, DueDate, CustomerID, ShipMethod)
+VALUES (@orderDate, @dueDate, @customerID, 'CARGO TRANSPORT 5')
+PRINT SCOPE_IDENTITY();
+-- 1 row affected, new sales order ID = 71947
+
 --Note: Support for Sequence objects was added to Azure SQL Database in version 12, which became
 --available in some regions in February 2015. If you are using the previous version of Azure SQL database
 --(and the corresponding previous version of the AdventureWorksLT sample database), you will need to
@@ -31,10 +40,25 @@ USE AdventureWorksLT2012
 --SalesLT.SalesOrderDetail table (using default values or NULL for unspecified columns). If the sales order
 --ID does not exist in the SalesLT.SalesOrderHeader table, the code should print the message ‘The order
 --does not exist’. You can test for the existence of a record by using the EXISTS predicate.
+DECLARE @salesOrderID int = 71947;
+DECLARE @productID int = 760;
+DECLARE @quantity smallint = 1;
+DECLARE @unitPrice money = 782.99;
+
+IF EXISTS (SELECT * FROM SalesLT.SalesOrderHeader WHERE SalesOrderID = @salesOrderID)
+	BEGIN 
+		INSERT INTO SalesLT.SalesOrderDetail (SalesOrderID, ProductID, OrderQty, UnitPrice)
+		VALUES (@salesOrderID, @productID, @quantity, @unitPrice)
+	END
+ELSE
+	BEGIN
+		PRINT 'The order does not exist'
+	END
+-- 1 row affected 
 
 --Test your code with the following values:
---Sales Order ID 	Product ID 	Quantity 	Unit Price
---The sales order ID    760		1		782.99
+--Sales Order ID 		Product ID 		Quantity 	Unit Price
+--The sales order ID    760				1			782.99
 --returned by your
 --previous code to insert
 --a sales order header.
@@ -42,7 +66,21 @@ USE AdventureWorksLT2012
 --Then test it again with the following values:
 --Sales Order ID	Product ID	Quantity	Unit Price
 --0			760		1		782.99
+DECLARE @salesOrderID int = 0;
+DECLARE @productID int = 760;
+DECLARE @quantity smallint = 1;
+DECLARE @unitPrice money = 782.99;
 
+IF EXISTS (SELECT * FROM SalesLT.SalesOrderHeader WHERE SalesOrderID = @salesOrderID)
+	BEGIN 
+		INSERT INTO SalesLT.SalesOrderDetail (SalesOrderID, ProductID, OrderQty, UnitPrice)
+		VALUES (@salesOrderID, @productID, @quantity, @unitPrice)
+	END
+ELSE
+	BEGIN
+		PRINT 'The order does not exist'
+	END
+-- The order does not exist
 
 --Adventure Works has determined that the market average price for a bike is $2,000, and consumer
 --research has indicated that the maximum price any customer would be likely to pay for a bike is $5,000.
@@ -59,4 +97,46 @@ USE AdventureWorksLT2012
 --determined from the SalesLT.vGetAllCategories view.
 --2) Update all products that are in the ‘Bikes’ parent category, increasing the list price by 10%.
 --3) Determine the new average and maximum selling price for products that are in the ‘Bikes’ parent category.
---4) If the new maximum price
+--4) If the new maximum price is greater than or equal to the maximum acceptable price, exit the loop; otherwise continue. 
+DECLARE @marketAveragePrice money = 2000;
+DECLARE @marketMaximumPrice money = 5000;
+DECLARE @BikesAveragePrice money; -- 1586.74 AVG for Bikes
+DECLARE @BikesMaximumPrice money; -- 3578.27 MAX for Bikes
+
+SELECT @BikesAveragePrice = AVG(ListPrice), @BikesMaximumPrice = MAX(ListPrice)
+FROM SalesLT.Product
+WHERE ProductCategoryID IN
+	(SELECT ProductCategoryID FROM SalesLT.vGetAllCategories
+	WHERE ParentProductCategoryName ='Bikes');
+
+PRINT 'Bikes AVG price is ' + CAST(@BikesAveragePrice AS nvarchar(50));
+PRINT 'Bikes MAX price is ' + CAST(@BikesMaximumPrice AS nvarchar(50));
+
+WHILE (@BikesAveragePrice < @marketAveragePrice)
+BEGIN
+	UPDATE SalesLT.Product
+	SET ListPrice = ListPrice * 1.1
+	WHERE ProductCategoryID IN
+		(SELECT ProductCategoryID FROM SalesLT.vGetAllCategories
+		WHERE ParentProductCategoryName ='Bikes');
+
+	IF(@BikesMaximumPrice >= @marketMaximumPrice)
+		BREAK;
+	ELSE
+		CONTINUE;
+END
+
+SELECT @BikesAveragePrice = AVG(ListPrice), @BikesMaximumPrice = MAX(ListPrice)
+FROM SalesLT.Product
+WHERE ProductCategoryID IN
+	(SELECT ProductCategoryID FROM SalesLT.vGetAllCategories
+	WHERE ParentProductCategoryName ='Bikes');
+
+PRINT 'New Bikes AVG price is ' + CAST(@BikesAveragePrice AS nvarchar(50));
+PRINT 'New Bikes MAX price is ' + CAST(@BikesMaximumPrice AS nvarchar(50));
+-- result of the full query
+--(97 rows affected)
+--Bikes AVG price is 2111.95
+--Bikes MAX price is 4762.68
+--New Bikes AVG price is 2111.95
+--New Bikes MAX price is 4762.68
